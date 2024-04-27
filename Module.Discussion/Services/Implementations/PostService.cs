@@ -38,7 +38,9 @@ public sealed class PostService(CassandraDbContext context, ILogger<PostService>
         Post? post = await context.Posts.FirstOrDefault(p => p.Id == id).ExecuteAsync();
         if (post == null) throw new EntityNotFoundException($"Post with id = {id} doesn't exist.");
         
-        await context.Posts.Where(p => p.Country == post.Country && p.Id == post.Id).Delete().ExecuteAsync();
+        await context.Posts.Where(p => p.Country == post.Country && p.TweetId == post.TweetId && p.Id == post.Id)
+            .Delete()
+            .ExecuteAsync();
         logger.LogInformation("Post with id = {Id} was deleted", id);
     }
 
